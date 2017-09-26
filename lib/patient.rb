@@ -1,28 +1,23 @@
-require "spec_helper"
+class Patient
+  attr_accessor :name
 
-describe "Patient" do
-  let!(:martin) { Patient.new("Martin Jones") }
-  let!(:doctor_who) { Doctor.new("The Doctor") }
-  let!(:appointment) { Appointment.new("Friday, January 32nd", doctor_who) }
-
-  describe "#new" do
-    it "initializes with a name" do
-      expect{Patient.new("Sophie")}.to_not raise_error
-    end
+  def initialize(name)
+    @name = name
+    @appointments = []
   end
 
-  describe "#add_appointment" do
-    it "takes in an argument of an apppointment and adds that appointment to it's list of appointments and tells that appointment it belongs to the patient" do
-      martin.add_appointment(appointment)
-      expect(martin.appointments).to include(appointment)
-      expect(appointment.patient).to eq(martin)
-    end
+  def add_appointment(appointment)
+    @appointments << appointment
+    appointment.patient = self
   end
 
-  describe "#doctors" do
-    it "has many doctors through appointments" do
-      martin.add_appointment(appointment)
-      expect(martin.doctors).to include(doctor_who)
+  def appointments
+    @appointments
+  end
+
+  def doctors
+    self.appointments.collect do |appointment|
+      appointment.doctor
     end
   end
 end
